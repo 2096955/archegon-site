@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog | Archegon</title>
+    <meta
+      name="description"
+      content="Practical notes from Archegon on agentic AI strategy, evaluation, governance, and operational delivery."
+    >
+    <meta name="theme-color" content="#f7f4ee">
+    <meta property="og:title" content="Blog | Archegon">
+    <meta
+      property="og:description"
+      content="Practical notes on building reliable AI agents for operational work."
+    >
+    <meta property="og:type" content="website">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="../" aria-label="Archegon home">
+        <img class="brand-logo" src="../assets/logo.svg" alt="Archegon" width="150" height="58">
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../#services">Services</a>
+        <a href="../#method">Method</a>
+        <a href="../#blog" aria-current="page">Blog</a>
+        <a href="../#engagements">Engagements</a>
+        <a href="../#contact">Contact</a>
+      </nav>
+      <a class="header-cta" href="mailto:hello@archegon.com?subject=Agentic%20AI%20consulting">
+        Start a diagnostic
+      </a>
+    </header>
+
+    <main class="blog-page" id="top">
+      <section class="section-band blog-hero">
+        <a class="back-link" href="../">Back to home</a>
+        <p class="eyebrow">Archegon blog</p>
+        <h1>Practical notes on reliable agent systems.</h1>
+        <p class="hero-lede">
+          Short essays for teams moving from AI experiments to operational workflows:
+          strategy, evaluation, governance, and the details that decide whether an agent is useful.
+        </p>
+      </section>
+
+      <section class="section-band post-list" aria-label="Blog posts">
+        <article class="post-card post-feature" id="automation-boundary">
+          <div>
+            <p class="post-meta">Field note</p>
+            <h2>Start with the automation boundary, not the model.</h2>
+          </div>
+          <div class="post-body">
+            <p>
+              Agent work should begin by separating decisions into three groups: actions the
+              system can take, recommendations it can prepare, and moments where a human owner
+              must approve the next step.
+            </p>
+            <p>
+              That boundary does more than reduce risk. It makes the build measurable. Once the
+              agent's authority is explicit, the team can test the cases that matter, design
+              the right handoffs, and avoid turning every edge case into a prompt problem.
+            </p>
+          </div>
+        </article>
+
+        <article class="post-card" id="evaluations">
+          <div>
+            <p class="post-meta">Evaluation</p>
+            <h2>Good demos are not evidence.</h2>
+          </div>
+          <div class="post-body">
+            <p>
+              A compelling demo usually shows the best path through a workflow. A useful pilot
+              shows the ordinary path, the messy path, and the failure path.
+            </p>
+            <p>
+              Before expanding an agent, build a small evaluation set from real work: typical
+              requests, awkward exceptions, missing information, ambiguous policies, and cases
+              that should trigger escalation. The goal is not perfection. The goal is knowing
+              what quality means before the system reaches customers or colleagues.
+            </p>
+          </div>
+        </article>
+
+        <article class="post-card" id="handoffs">
+          <div>
+            <p class="post-meta">Operations</p>
+            <h2>Handoffs are part of the product.</h2>
+          </div>
+          <div class="post-body">
+            <p>
+              An agent that cannot hand work back cleanly is not production ready. Handoff
+              design should specify who receives the case, what context travels with it, how
+              urgency is represented, and which decisions have already been made.
+            </p>
+            <p>
+              The best operating models make escalation boring: predictable queues, clear
+              ownership, reviewable traces, and enough structure that humans do not have to
+              reconstruct the agent's reasoning from scratch.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-band contact-band">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Discuss a workflow</p>
+            <h2>Use the blog as a starting point, not a substitute for diagnosis.</h2>
+            <p>
+              Bring one operational process and Archegon can help define the automation
+              boundary, evaluation approach, and governance model.
+            </p>
+          </div>
+          <a class="button primary" href="mailto:hello@archegon.com?subject=Agentic%20AI%20diagnostic">
+            Email Archegon
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Archegon</p>
+      <p>AI agentic consulting for operational teams.</p>
+    </footer>
+
+    <script src="../script.js"></script>
+  </body>
+</html>
