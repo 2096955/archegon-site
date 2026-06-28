@@ -27,6 +27,8 @@ Keep the Google mail records intact. Only change the website records for `www` a
 
 - Investor-facing language is framed as "register interest" / "get in touch".
 - Financial and project material is labelled illustrative and subject to due diligence.
+- The New Zealand and Australia downloads are public summaries generalised from source business plans.
+- Detailed financial models, capital stacks, performance assumptions, and capital requirements should remain in a private data-room process after legal review.
 - The form uses a mailto fallback until a hosted form provider is configured.
 - Plausible is referenced for privacy-friendly analytics; connect the domain in Plausible before relying on dashboard data.
-- Replace the generated project-brief PDFs with founder-approved business-plan PDFs when the source plans are available.
+- Review all investor-facing language with a solicitor familiar with financial-promotion rules before broad launch.

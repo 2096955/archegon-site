@@ -17,6 +17,13 @@ EMBER = HexColor("#d66b35")
 AMBER = HexColor("#f0b35a")
 MUTED = HexColor("#665f56")
 LINE = HexColor("#e2d8ca")
+WHITE = HexColor("#fffaf1")
+
+DISCLAIMER = (
+    "Nothing in this document or on archegon.com constitutes an offer or invitation to invest, "
+    "financial advice, or a financial promotion. Figures are illustrative, built from public "
+    "benchmarks where stated, and subject to verification and due diligence."
+)
 
 
 def draw_wrapped(c, text, x, y, width_chars=86, size=10.5, leading=14, color=MUTED, font="Helvetica"):
@@ -31,8 +38,7 @@ def draw_wrapped(c, text, x, y, width_chars=86, size=10.5, leading=14, color=MUT
     return y
 
 
-def draw_pdf(path, route, subtitle, bullets, note):
-    c = canvas.Canvas(str(path), pagesize=A4)
+def start_project_page(c, title, subtitle, page_number):
     w, h = A4
     margin = 48
 
@@ -45,64 +51,74 @@ def draw_pdf(path, route, subtitle, bullets, note):
         c.line(0, offset, w, offset)
 
     c.setFillColor(INK)
-    c.roundRect(margin, h - 185, w - margin * 2, 128, 8, stroke=0, fill=1)
+    c.roundRect(margin, h - 170, w - margin * 2, 114, 8, stroke=0, fill=1)
     c.setFillColor(AMBER)
     c.setFont("Helvetica-Bold", 10)
-    c.drawString(margin + 24, h - 92, "ARCHEGON PROJECT BRIEF")
-    c.setFillColor(HexColor("#fffaf1"))
-    c.setFont("Helvetica-Bold", 30)
-    c.drawString(margin + 24, h - 132, route)
-    c.setFont("Helvetica", 12)
-    c.drawString(margin + 24, h - 156, subtitle)
-
-    y = h - 230
-    c.setFillColor(EMBER)
-    c.setFont("Helvetica-Bold", 13)
-    c.drawString(margin, y, "Working thesis")
-    y -= 24
-    y = draw_wrapped(
-        c,
-        "Archegon develops geothermal-powered data centres - pairing 24/7 firm clean power "
-        "with AI inference, where the grid cannot reach and intermittent renewables cannot follow.",
-        margin,
-        y,
-        width_chars=84,
-        size=11,
-        leading=15,
-        color=INK,
-    )
-
-    y -= 10
-    c.setFillColor(EMBER)
-    c.setFont("Helvetica-Bold", 13)
-    c.drawString(margin, y, "Route summary")
-    y -= 24
-    for bullet in bullets:
-        c.setFillColor(EMBER)
-        c.circle(margin + 4, y + 4, 2.5, stroke=0, fill=1)
-        y = draw_wrapped(c, bullet, margin + 18, y, width_chars=78, size=10.5, leading=14, color=INK)
-        y -= 3
-
-    y -= 12
-    c.setFillColor(EMBER)
-    c.setFont("Helvetica-Bold", 13)
-    c.drawString(margin, y, "Diligence note")
-    y -= 24
-    draw_wrapped(c, note, margin, y, width_chars=84, size=10.5, leading=14, color=MUTED)
+    c.drawString(margin + 24, h - 92, "ARCHEGON PUBLIC PROJECT SUMMARY")
+    c.setFillColor(WHITE)
+    c.setFont("Helvetica-Bold", 26)
+    c.drawString(margin + 24, h - 126, title)
+    c.setFont("Helvetica", 11.5)
+    c.drawString(margin + 24, h - 150, subtitle)
 
     c.setStrokeColor(EMBER)
     c.setLineWidth(3)
-    c.line(margin, 110, margin, 66)
-    disclaimer = (
-        "Nothing in this document or on archegon.com constitutes an offer or invitation to invest, "
-        "financial advice, or a financial promotion. All figures are illustrative, built from public "
-        "benchmarks where stated, and subject to verification and due diligence."
-    )
-    draw_wrapped(c, disclaimer, margin + 14, 103, width_chars=90, size=8.7, leading=11, color=MUTED)
+    c.line(margin, 86, margin, 48)
+    draw_wrapped(c, DISCLAIMER, margin + 14, 80, width_chars=90, size=8.4, leading=10.5, color=MUTED)
 
     c.setFillColor(MUTED)
     c.setFont("Helvetica", 8)
-    c.drawString(margin, 34, "archegon.com | hello@archegon.com | Preliminary project brief")
+    c.drawString(margin, 28, f"archegon.com | hello@archegon.com | Public discussion draft | Page {page_number}")
+
+    return h - 212
+
+
+def add_heading(c, label, y, margin=48):
+    c.setFillColor(EMBER)
+    c.setFont("Helvetica-Bold", 12.5)
+    c.drawString(margin, y, label)
+    return y - 22
+
+
+def add_bullets(c, bullets, y, margin=48, width_chars=79):
+    for bullet in bullets:
+        c.setFillColor(EMBER)
+        c.circle(margin + 4, y + 4, 2.5, stroke=0, fill=1)
+        y = draw_wrapped(c, bullet, margin + 18, y, width_chars=width_chars, size=10.2, leading=13.5, color=INK)
+        y -= 3
+    return y
+
+
+def draw_project_summary(path, title, subtitle, summary, sections, what_archegon_seeks, private_note):
+    c = canvas.Canvas(str(path), pagesize=A4)
+    margin = 48
+    page = 1
+    y = start_project_page(c, title, subtitle, page)
+
+    y = add_heading(c, "Public framing", y)
+    y = draw_wrapped(c, summary, margin, y, width_chars=84, size=10.8, leading=14.5, color=INK)
+
+    y -= 10
+    for section_title, bullets in sections:
+        if y < 190:
+            c.showPage()
+            page += 1
+            y = start_project_page(c, title, subtitle, page)
+        y = add_heading(c, section_title, y)
+        y = add_bullets(c, bullets, y)
+        y -= 7
+
+    if y < 235:
+        c.showPage()
+        page += 1
+        y = start_project_page(c, title, subtitle, page)
+    y = add_heading(c, "What Archegon is seeking", y)
+    y = add_bullets(c, what_archegon_seeks, y)
+
+    y -= 9
+    y = add_heading(c, "Financial model and diligence", y)
+    y = draw_wrapped(c, private_note, margin, y, width_chars=84, size=10.2, leading=13.5, color=MUTED)
+
     c.showPage()
     c.save()
 
@@ -149,32 +165,107 @@ def draw_og_card():
 
 
 def main():
-    draw_pdf(
+    draw_project_summary(
         ASSETS / "archegon-new-zealand-project-brief.pdf",
-        "New Zealand - The Build",
-        "Grid-adjacent geothermal AI campus",
+        "New Zealand Project Summary",
+        "Geothermal-anchored AI inference campus",
+        "Archegon is exploring a grid-connected, geothermal-anchored AI inference campus in New "
+        "Zealand. The public thesis is simple: AI infrastructure increasingly needs firm clean "
+        "power, geothermal naturally matches a 24/7 compute load, and New Zealand offers an "
+        "operating geothermal context that could support a buildable first route. This summary "
+        "generalises the source business plan for qualified conversations only.",
         [
-            "Proven, operating geothermal context with a lower-risk infrastructure development path.",
-            "Temperate climate, natural cooling potential, water availability, and fast-track consenting.",
-            "A preliminary 100 MW+ AI campus concept to be validated with partners and site diligence.",
-            "Best suited to infrastructure, energy, and strategic compute partners seeking a buildable route this decade.",
+            (
+                "Route thesis",
+                [
+                    "A preliminary 100 MW Phase 1 campus concept, with longer-term expansion potential subject to grid, power, land, consent, fibre, water, tenant, and financing diligence.",
+                    "Power strategy centred on a long-term firm-geothermal commercial arrangement rather than speculative merchant exposure.",
+                    "Target use case is AI inference and other steady workloads that value reliable low-carbon capacity and speed-to-power.",
+                ],
+            ),
+            (
+                "Why New Zealand",
+                [
+                    "Existing geothermal operating base, high renewable grid share, temperate climate, and credible infrastructure institutions create a lower-variance route than first-of-a-kind frontier resource development.",
+                    "Candidate paths include Central North Island geothermal proximity and Southland-style colder-climate infrastructure routes; both require site-specific diligence before claims are made.",
+                    "The country-level opportunity is framed as a partner-led infrastructure conversation, not a public investment invitation.",
+                ],
+            ),
+            (
+                "Development path",
+                [
+                    "Stage 1: confirm energy partner, site, fibre, water, consenting route, demand case, and preliminary engineering.",
+                    "Stage 2: secure anchor tenant or strategic partner interest, complete feasibility, and move to investment-grade diligence.",
+                    "Stage 3: pursue phased campus delivery only after the assumptions have been validated by qualified technical, legal, and financial parties.",
+                ],
+            ),
+            (
+                "Key diligence workstreams",
+                [
+                    "Power price, CPPA bankability, grid connection, curtailment exposure, and counterparty credit quality.",
+                    "Land, iwi and community engagement, environmental consent, water, cooling, construction logistics, and fibre resilience.",
+                    "Tenant concentration, data-centre capex, AI hardware ownership model, contracting structure, foreign investment rules, FX, and construction inflation.",
+                ],
+            ),
         ],
-        "This is a preliminary branded summary created from the current Archegon thesis. "
-        "Replace it with the founder-approved full business plan before broad investor or partner circulation.",
+        [
+            "Expressions of interest from infrastructure investors, energy partners, AI compute customers, data-centre operators, technical co-founders, and advisors.",
+            "Feedback on the site-screening approach, commercial structure, consenting pathway, and how to make the opportunity credible for an investment-grade diligence process.",
+            "Qualified conversations that may lead to a separate private data-room review.",
+        ],
+        "The underlying source plan contains capital-cost ranges, revenue assumptions, scenario analyses, and staged capital requirements. Those figures are not published here because they require verification, legal review, and a qualified diligence process. Detailed financial material should be shared separately only with appropriate parties.",
     )
 
-    draw_pdf(
+    draw_project_summary(
         ASSETS / "archegon-australia-project-brief.pdf",
-        "Australia - The Bet",
-        "Off-grid Cooper Basin compute hub",
+        "Australia Project Summary",
+        "Off-grid Cooper Basin AI inference hub",
+        "Archegon is exploring a higher-risk Australian route: an off-grid, behind-the-meter AI "
+        "inference hub in the Cooper Basin, combining enhanced geothermal systems, solar, "
+        "storage, dry cooling, and resilient connectivity. The public thesis is that remote firm "
+        "clean power can become useful when the compute load moves to the resource instead of "
+        "waiting for transmission. This summary generalises the source business plan for "
+        "qualified conversations only.",
         [
-            "World-class hot-dry-rock thesis with behind-the-meter, fully off-grid potential.",
-            "Higher technical and development risk, with multi-GW scale headroom if validated.",
-            "Power-stack ownership and optional lithium co-production are research-stage upside themes.",
-            "Best suited to geothermal, infrastructure, energy, and frontier compute partners willing to diligence the resource.",
+            (
+                "Route thesis",
+                [
+                    "Cooper Basin hot-dry-rock geology creates a frontier option on large-scale firm clean power, but commercial-scale reservoir performance remains the central risk.",
+                    "The intended model is vertically integrated and behind the meter: geothermal baseload, solar support, storage, cooling, fibre or redundant backhaul, and modular data-centre capacity.",
+                    "The route is explicitly milestone-gated; no large-scale build should proceed until subsurface, water, cooling, connectivity, offtake, and financing risks are materially de-risked.",
+                ],
+            ),
+            (
+                "Why Australia",
+                [
+                    "The Cooper Basin has historic geothermal proof points and very hot granite, while the remote location historically made power export difficult.",
+                    "AI inference and other latency-tolerant workloads could change the economics by bringing demand to the power source.",
+                    "Potential co-products and land-use ideas, including lithium brine analysis and agrivoltaic land use, are treated as research-stage upside rather than base-case economics.",
+                ],
+            ),
+            (
+                "Development path",
+                [
+                    "Phase 0: resource confirmation, pilot well design, water and cooling strategy, tenure, environmental route, connectivity plan, and customer discovery.",
+                    "Phase 1: only if the pilot validates the reservoir and commercial gates, pursue a first modular campus with anchor demand and project-finance-ready diligence.",
+                    "Later phases would use repeatable blocks only after well productivity, cooling performance, logistics, contracting, and cost data are proven.",
+                ],
+            ),
+            (
+                "Key diligence workstreams",
+                [
+                    "EGS reservoir productivity, drilling cost curve, induced-seismicity controls, reinjection, and long-term resource performance.",
+                    "Water availability, dry and radiative cooling performance, desert construction logistics, fibre resilience, LEO redundancy, and operational staffing.",
+                    "Capital intensity, anchor customer structure, grants or public finance, strategic partners, regulatory tenure, FX, insurance, and first-of-a-kind execution risk.",
+                ],
+            ),
         ],
-        "This is a preliminary branded summary created from the current Archegon thesis. "
-        "Replace it with the founder-approved full business plan before broad investor or partner circulation.",
+        [
+            "Expressions of interest from geothermal developers, subsurface experts, infrastructure capital, hyperscale or AI compute customers, energy partners, and Australian policy or grants specialists.",
+            "Technical review of whether the Fervo-style EGS playbook, cooling architecture, and connectivity route can be adapted credibly to the Cooper Basin.",
+            "Qualified conversations that may lead to a separate private data-room review.",
+        ],
+        "The underlying source plan contains pilot capital requirements, Phase 1 capex ranges, scenario analyses, capital-stack scenarios, sensitivity tables, and exit analysis. Those figures are not published here because the opportunity is first-of-a-kind and requires technical validation, legal review, and a qualified diligence process before any investment discussion.",
     )
 
     draw_og_card()
